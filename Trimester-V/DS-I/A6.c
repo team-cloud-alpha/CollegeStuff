@@ -76,27 +76,19 @@ void reverseList(struct Node** start) {
     *start = previous;
 }
 
-void sortedInsert(struct Node** start, struct Node* node) {
-    struct Node temp_head;
-    struct Node* current = &temp_head;
-    temp_head.next = *start;
-    while (current->next != NULL && current->next->value < node->value) {
-        current = current->next;
+//sort the linked list
+void sort(Node** start) {
+    int a;
+    Node* temp1, *temp2;
+    for(temp1 = *start; temp1 != NULL ; temp1 = temp1->next) {
+        for(temp2 = temp1; temp2 != NULL; temp2 = temp2->next) {
+            if(temp2->data < temp1->data) {
+                a = temp1->data;
+                temp1->data = temp2->data;
+                temp2->data = a;
+            }
+        }
     }
-    node->next = current->next;
-    current->next = node;
-    *start = temp_head.next;
-}
-
-void sortList(struct Node** start) {
-    struct Node *result = NULL;
-    struct Node *current = *start, *next;
-    while (current != NULL) {
-        next = current->next;
-        sortedInsert(&result, current);
-        current = next;   
-    }
-    *start = result;
 }
 
 void mergeList(struct Node** start, struct Node** to_merge_start) {
