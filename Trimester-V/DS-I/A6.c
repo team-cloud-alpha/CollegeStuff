@@ -6,6 +6,8 @@ struct Node {
     int value;
 };
 
+typedef struct Node Node;
+
 void addNode(struct Node** start) {
     int n;
     printf("Enter value of node: ");
@@ -76,27 +78,18 @@ void reverseList(struct Node** start) {
     *start = previous;
 }
 
-void sortedInsert(struct Node** start, struct Node* node) {
-    struct Node temp_head;
-    struct Node* current = &temp_head;
-    temp_head.next = *start;
-    while (current->next != NULL && current->next->value < node->value) {
-        current = current->next;
+void sortList(Node** start) {
+    int a;
+    Node* t1, *t2;
+    for(t1 = *start; t1 != NULL ; t1 = t1->next) {
+        for(t2 = t1; t2 != NULL; t2 = t2->next) {
+            if(t2->value < t1->value) {
+                a = t1->value;
+                t1->value = t2->value;
+                tp2->value = a;
+            }
+        }
     }
-    node->next = current->next;
-    current->next = node;
-    *start = temp_head.next;
-}
-
-void sortList(struct Node** start) {
-    struct Node *result = NULL;
-    struct Node *current = *start, *next;
-    while (current != NULL) {
-        next = current->next;
-        sortedInsert(&result, current);
-        current = next;   
-    }
-    *start = result;
 }
 
 void mergeList(struct Node** start, struct Node** to_merge_start) {
