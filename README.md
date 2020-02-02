@@ -5,4 +5,4 @@ Hi, WPU CSE Student, looks like you have got your head wrapped around the proble
 **Note** : Please do not copy our code. Read it, understand it & then write your own implementation. This is for your own sake.
 
 ## Contributing
-If any of the problem statements & you wish to update the code in this repository, please open a Pull Request & include the updated problem statement in it. One of the team members will review it & merge it.
+If any of the problem statements were changed & you wish to update the code in this repository, please open a Pull Request & include the updated problem statement in it. One of the team members will review it & merge it.
