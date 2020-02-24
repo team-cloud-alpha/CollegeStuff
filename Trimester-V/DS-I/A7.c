@@ -63,7 +63,8 @@ struct Node* add(struct Node** start1, struct Node** start2) {
             addNode(&addition, current1->power, current1->coeff + current2->coeff);
             current1 = current1->next;
             current2 = current2->next;
-            if(current1 == (*start1) || current2 == (*start2)) flag1 = flag2 = true;
+            if(current1 == (*start1)) flag1 = true; 
+            if(current2 == (*start2)) flag2 = true;
         }
     }
 
