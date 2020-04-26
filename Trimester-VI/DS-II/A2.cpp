@@ -21,6 +21,9 @@ private:
     Node* top;
     Node* Clone(Node*);
     void MirrorUtil(Node*);
+    void Pre_Order_Rec_Traverse(Node*);
+    void In_Order_Rec_Traverse(Node*);
+    void Post_Order_Rec_Traverse(Node*);
 public:
     BinaryTree() {
         this->top = NULL;
@@ -30,6 +33,9 @@ public:
     void Mirror();
     BinaryTree Copy();
     void Display();
+    void Helper(int);
+    Node* Delete(Node*, string);
+    Node* Delete(string);
 };
 
 void BinaryTree::Insert(string key, string meaning) {
@@ -106,6 +112,71 @@ void BinaryTree::Display() {
     }
 }
 
+void BinaryTree::Pre_Order_Rec_Traverse(Node* top) {
+    if(top == NULL)
+        return;
+    cout << top->key << " ";
+    this->Pre_Order_Rec_Traverse(top->left);
+    this->Pre_Order_Rec_Traverse(top->right);
+}
+
+void BinaryTree::In_Order_Rec_Traverse(Node* top) {
+    if(top == NULL)
+        return;
+    this->In_Order_Rec_Traverse(top->left);
+    cout << top->key << " ";
+    this->In_Order_Rec_Traverse(top->right);
+}
+
+void BinaryTree::Post_Order_Rec_Traverse(Node* top) {
+    if(top == NULL)
+        return;
+    this->Post_Order_Rec_Traverse(top->left);
+    this->Post_Order_Rec_Traverse(top->right);
+    cout << top->key << " ";
+}
+
+void BinaryTree::Helper(int type) {
+    switch(type) {
+        case 1: this->Pre_Order_Rec_Traverse(this->top); break;
+        case 2: this->In_Order_Rec_Traverse(this->top); break;
+        case 3: this->Post_Order_Rec_Traverse(this->top); break;
+    }
+}
+
+Node* BinaryTree::Delete(Node* root, string key) {
+    if (root == NULL)
+        return root;
+    if (key < root->key)
+        root->left = Delete(root->left, key);
+    else if (key > root->key)
+        root->right = Delete(root->right, key);
+    else {
+        if (root->left == NULL) {
+            Node* temp = root->right;
+            free(temp);
+            return temp;
+        }
+        else if(root->right == NULL) {
+            Node* temp = root->left;
+            free(temp);
+            return NULL;
+        }
+        else {
+            Node* temp = root->right;
+            while (temp->left != NULL) 
+                temp = temp->left;
+            root->key = temp->key;
+            root->right = Delete(root->right, temp->key);
+        }
+    }
+    return root;
+}
+
+Node* BinaryTree::Delete(string key) {
+    return this->Delete(this->top, key);
+}
+
 int main() {
     BinaryTree tree;
     int choice;
@@ -116,6 +187,8 @@ int main() {
         cout << "3. Mirror current tree\n";
         cout << "4. Clone tree\n";
         cout << "5. Display tree level-wise\n";
+        cout << "6. Display preorder\n7. Display in order\n8. Display post order\n";
+        cout << "9. Delete word\n";
         cout << "Enter your choice: ";
         cin >> choice;
         switch(choice) {
@@ -151,6 +224,25 @@ int main() {
             }
             case 5: {
                 tree.Display();
+                break;
+            }
+            case 6: {
+                tree.Helper(1);
+                break;
+            }
+            case 7: {
+                tree.Helper(2);
+                break;
+            }
+            case 8:{
+                tree.Helper(3);
+                break;
+            }
+            case 9:{
+                string key;
+                cout << "Enter the word to delete: ";
+                cin >> key;
+                tree.Delete(key);
             }
         }
     }
