@@ -80,18 +80,21 @@ void BinaryTree::In_Order_Traversal() {
 }
 
 void BinaryTree::Pre_Order_Traversal() {
-    stack<Node*> stk;
     Node* current = this->root;
-    while(!stk.empty() || current != NULL) {
-        if(current == NULL) {
-            current = stk.top();
-            stk.pop();
-        } else {
-            if(!current->rightThread && current->right != NULL) {
-                stk.push(current->right);
-            }
-            cout << current->val << " ";
+    while (current != NULL) {
+        cout << current->val << " ";
+        if (current-> left != NULL) 
             current = current->left;
+        else if (!current->rightThread)
+            current = current->right;
+        else {
+            while (current->right != NULL && current->rightThread) 
+                current = current->right;
+
+            if (current->right == NULL)
+                break;
+            else 
+                current = current->right;
         }
     }
     cout << "\n";
