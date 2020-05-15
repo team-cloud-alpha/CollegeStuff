@@ -54,17 +54,37 @@ unsigned short fifoReplace(short* refstring, size_t reflength, short *buffer, si
 	return page_faults;
 }
 
+// Move an element in array to top, pushing rest below
+void moveToTop(short* array, size_t length, size_t index) {
+	short temp;
+	while(index<length-1) {
+		temp=array[index];
+		array[index]=array[index+1];
+		array[++index]=temp;
+	}
+}
+
+// Insert an element into array at top, discarding one at bottom
+void insertAtTop(short* array, size_t length, short element) {
+	short temp;
+	while(length>0) {
+		temp=array[--length];
+		array[length]=element;
+		element=temp;
+	}
+}
+
 // LRU Replacement algorithm
 unsigned short lruReplace(short* refstring, size_t reflength, short *buffer, size_t buflength) {
 	printf("\n**** LRU REPLACEMENT ****\n");
 
 	short in_ref;			// Store incoming reference
-	unsigned short page_faults=0;			// No. of page faults
-	unsigned short usage_freq[buflength];	// Usage frequency of buffer references
+	unsigned short page_faults=0;	// No. of page faults
+	short lastNused[buflength];		// Last N used references
 
-	// Initially, all usage frequencies are zero
-	for(size_t i=0,j; i<buflength; ++i)
-		usage_freq[i]=0;
+	// Initially, all are unused
+	for(size_t i=0; i<buflength; ++i)
+		lastNused[i]=-1;
 
 	for(size_t i=0,j,k; i<reflength; ++i) {
 
@@ -81,20 +101,28 @@ unsigned short lruReplace(short* refstring, size_t reflength, short *buffer, siz
 		if(j==buflength) {
 			printf("\nMISS: ");			// If no, MISS
 
-			// Search for the element with lowest usage frequency from beginning (Jugaad 100)
+			// Search for the oldest-used element in buffer
 			k=buflength;
-			for(short freq=0; k==buflength && freq<=i; ++freq)
-				for(k=0; k<buflength; k++)
-					if(usage_freq[k]==freq) {	// Replace it
+			for(j=0; k==buflength && j<buflength; ++j)
+				for(k=0; k<buflength; ++k)
+					if(lastNused[j]==buffer[k]) {	// Replace it
 						buffer[k]=in_ref;
-						j=k;
 						++page_faults;			// And increment page fault
 						break;
 					}
 		}
 
-		// Increase usage frequency count by 1
-		++usage_freq[j];
+		// Update the lastNused array
+		for(j=0; j<buflength-1; ++j)
+			if(lastNused[j]==in_ref) {				// If incoming element is already present,
+				moveToTop(lastNused,buflength,j);	// move it to the top
+				break;
+			}
+		if(j==buflength-1) {
+			if(lastNused[j]!=in_ref)				// Else, insert incoming element at top
+				insertAtTop(lastNused,buflength,in_ref);
+			else {}							// Ignore if top element is already the incoming element (very unlikely)
+		}
 
 		// Print buffer state
 		displayPages(buffer,buflength);
